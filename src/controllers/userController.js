@@ -153,7 +153,6 @@ const logoutUser = asyncHandler(async (req, res) => {
     .json(
         new ApiResponse(200, {} , "user logged out successfully")
     )
-
 })
 
 
@@ -173,7 +172,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Refresh token Invalid")
     }
 
-    if(user?.refreshToken != incomingRefreshToken) {
+    if(user?.refreshToken !== incomingRefreshToken) {
         throw new ApiError(400, "Refresh token Invalid or expired")
     }
 
@@ -192,11 +191,38 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             {accessToken, refreshToken},
             "Access token refresed successfully")
         )
-
 })
 
+
+const getCurrentUser = asyncHandler(async (req, res) => {
+
+    return res.status(200)
+    .json(200, req.user , "User fetched successfully")
+})
+
+
+const changePassword = asyncHandler(async (req, res) => {
+    const {oldPassword, newPassword} = req.body
+
+    const user = await User.findById(user._id)
+    const checkForPassword = await user.isPasswordCorrect(oldPassword)
+
+    if(!checkForPassword) {
+        throw new ApiError(200, "Password Incorrect")
+    }
+
+    user.password = newPassword
+    await user.save({validateBeforeSave: false})
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, {}, "Password Changed Successfully")
+    )
+})
 
 export { registerUser,
         loginUser,
         logoutUser,
-        refreshAccessToken }
+        refreshAccessToken,
+        getCurrentUser,
+        changePassword }
