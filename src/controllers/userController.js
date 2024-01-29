@@ -65,3 +65,70 @@ const registerUser = asyncHandler(async(req, res) => {
         new ApiResponse(200, findUser, "User registered successfully")
     )
 })
+
+
+const generateAccessAndRefreshTokens =  async (userId) => {
+
+    try {
+            const user = await User.findById(userId)
+            const accessToken = await user.generateAccessToken()
+            const refreshToken = await user.generateRefreshToken()
+        
+            user.refreshToken = refreshToken
+        
+            await user.save({validateBeforeSave : false})
+        
+            return {refreshToken, accessToken}
+    } catch (error) {
+        throw new ApiError(400, "couldn't generate access and refresh tokens")
+    }
+    
+}
+
+const loginUser = asyncHandler(async (req, res) => {
+
+    const {email, username, password} = req.body
+
+    if(!email && !username) {
+        throw new ApiError(401, "email or username required")
+    }
+
+    const user = await User.findOne({
+        $or : [{email}, {username}]
+    })
+
+    if(!user) {
+        throw new ApiError(401, "user doesn't exist")
+    }
+
+    const checkForPassword = await user.isPasswordCorrect(password)
+
+    if(!checkForPassword) {
+        throw new ApiError(401, "password is incorrect")
+    }
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(user._id)
+
+    const userLoggedIn = await User.findById(user._id)
+    .select("-password -refreshToken")
+
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+    return res.status(200)
+    .cookie("access_token", accessToken, options)
+    .cookie("refresh_token", refreshToken, options)
+    .json(
+        new ApiResponse(202,
+            {user: userLoggedIn, accessToken, refreshToken},
+            "User logged In successfully")
+    )
+
+})
+
+
+
+export { registerUser,
+        loginUser }
