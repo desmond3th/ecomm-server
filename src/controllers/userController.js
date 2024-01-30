@@ -317,6 +317,22 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 })
 
 
+const deleteUserAccount = asyncHandler(async(req, res) => {
+    const userId = req.user._id
+
+    const user = await User.findOneAndDelete(userId)
+
+    if(!user) {
+        throw new ApiError(400, "User Account deletion failed" )
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, {}, "User Account Deleted Successfully")
+    )
+})
+
+
 export { registerUser,
         loginUser,
         logoutUser,
@@ -325,4 +341,5 @@ export { registerUser,
         changePassword,
         updateUserDetails,
         updateUserAvatar,
-        updateUserCoverImage }
+        updateUserCoverImage,
+        deleteUserAccount }
