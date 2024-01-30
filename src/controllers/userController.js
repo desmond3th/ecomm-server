@@ -281,6 +281,42 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 })
 
 
+const updateUserCoverImage = asyncHandler(async (req, res) => {
+    const coverImagepath = req.file?.coverImage
+
+    if(!coverImagepath) {
+        throw new ApiError(400, "COver Image path required" )
+    }
+
+    const coverImage = await cloudinaryUpload(coverImagepath)
+
+    if(!coverImage.url) {
+        throw new ApiError(400, "Cover Image uploading failed" )
+    }
+
+    const oldCoverImagePath = req.user?.coverImage
+
+    const deleteOldCoverImage = await cloudinaryUpload(oldCoverImagePath)
+
+    if(!deleteOldCoverImage.url) {
+        throw new ApiError(400, "Cover Image deletion failed" )
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id,
+        {
+            $set: {
+                coverImage: coverImage.url
+            }
+        }, {new:true})
+        .select("-password")
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, user, "Cover Image Updated Successfully")
+    )
+})
+
+
 export { registerUser,
         loginUser,
         logoutUser,
@@ -288,4 +324,5 @@ export { registerUser,
         getCurrentUser,
         changePassword,
         updateUserDetails,
-        updateUserAvatar }
+        updateUserAvatar,
+        updateUserCoverImage }
