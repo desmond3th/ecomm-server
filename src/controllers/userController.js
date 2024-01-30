@@ -245,10 +245,47 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 })
 
 
+const updateUserAvatar = asyncHandler(async (req, res) => {
+    const avatarPath = req.file?.path
+
+    if(!avatarPath) {
+        throw new ApiError(400, "No avatar path provided")
+    }
+
+    const avatar = await cloudinaryUpload(avatarPath)
+
+    if(!avatar.url) {
+        throw new ApiError(400, "Failed to upload avatar")
+    }
+
+    const oldAvatarUrl = req.user.avatar
+
+    const deleteOldAvatar = await cloudinaryDelete(oldAvatarUrl)
+
+    if(!deleteOldAvatar) {
+        throw new ApiError(400, "Failed to delete old avatar" )
+    }
+
+    const user = await User.findByIdAndUpdate(req.user._id,
+        {
+            $set: {
+                avatar : avatar.url
+            }
+        }, {new: true})
+        .select("-password")
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, user, "Avatar Updatad Successfully")
+    )
+})
+
+
 export { registerUser,
         loginUser,
         logoutUser,
         refreshAccessToken,
         getCurrentUser,
         changePassword,
-        updateUserDetails }
+        updateUserDetails,
+        updateUserAvatar }
