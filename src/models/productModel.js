@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 const productSchema = new mongoose.Schema(
     {
@@ -11,7 +12,11 @@ const productSchema = new mongoose.Schema(
             type: String,
         },
         productImage: {
-            type: String,
+            required: true,
+            type: {
+                url: String,
+                localPath: String,
+            },
         },
         price: {
             type: Number,
@@ -34,5 +39,7 @@ const productSchema = new mongoose.Schema(
     { timestamps: true }
 
 );
+
+productSchema.plugin(mongooseAggregatePaginate);
 
 export const Product = mongoose.model('Product', productSchema);

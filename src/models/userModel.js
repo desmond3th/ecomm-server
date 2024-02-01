@@ -4,27 +4,24 @@ import { USER_TEMPORARY_TOKEN_EXPIRY } from "../constants.js";
 
 const userSchema = new mongoose.Schema(
     {
-        fullname: {
-            type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
-        },
         username: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
+            trim: true,
+            index: true,
         },
         email: {
             type: String,
             required: true,
             unique: true,
             lowercase: true,
+            trim: true,
         },
         password: {
             type: String,
-            required: true,
+            required: [true, "Password is required"],
         },
         avatar: {
             type: String,
