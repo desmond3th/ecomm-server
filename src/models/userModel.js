@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { USER_TEMPORARY_TOKEN_EXPIRY } from "../constants.js";
+
 const userSchema = new mongoose.Schema(
     {
         fullname: {
