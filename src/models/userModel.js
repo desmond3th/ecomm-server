@@ -80,12 +80,12 @@ userSchema.methods.generateRefreshToken = function() {
     )
 }
 
+// This token should be client facing
 userSchema.methods.generateTemporaryToken = function () {
-    // This token should be client facing
-    // for example: for email verification unHashedToken should go into the user's mail
+    // for eg: for email verification unHashedToken should go into the user's mail
     const unHashedToken = crypto.randomBytes(20).toString("hex");
 
-    // This should stay in the DB to compare at the time of verification
+    // Store in DB to compare at the time of verification
     const hashedToken = crypto
     .createHash("sha256")
     .update(unHashedToken)

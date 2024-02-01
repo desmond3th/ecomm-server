@@ -45,6 +45,6 @@ const addressSchema = new Schema(
     }, {timestamps: true}
 );
 
-categorySchema.plugin(mongooseAggregatePaginate);
+addressSchema.plugin(mongooseAggregatePaginate);
 
 export const Address = mongoose.model("Address", addressSchema);
