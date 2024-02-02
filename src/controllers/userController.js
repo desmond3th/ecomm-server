@@ -54,10 +54,29 @@ const registerUser = asyncHandler(async(req, res) => {
         username,
         password,
         avatarUrl : avatarUrl.url,
+        isEmailVerified : false,
     })
 
+    const { unHashedToken, hashedToken, tokenExpiry } = user.generateTemporaryToken();
+
+    user.emailVerificationToken = hashedToken;
+    user.emailVerificationExpiry = tokenExpiry;
+    
+    await user.save({validateBeforeSave: false});
+
+    await sendEmail({
+        email: user?.email,
+        subject: "Please verify your email",
+        mailgenContent: emailVerificationMailgenContent(
+            user.username,
+            `${req.protocol}://${req.get(
+            "host"
+        )}/api/v1/users/verify-email/${unHashedToken}`
+        ),
+    });
+
     const findUser = await User.findById(user._id)
-    .select("-password -refreshToken")
+    .select("-password -refreshToken -emailVerificationToken -emailVerificationExpiry")
 
     if(!findUser) {
         throw new ApiError(400, "couldn't register user")
@@ -65,7 +84,7 @@ const registerUser = asyncHandler(async(req, res) => {
 
     return res.status(200)
     .json(
-        new ApiResponse(200, findUser, "User registered successfully")
+        new ApiResponse(200, {user : findUser}, "User registered successfully, please verify your email")
     )
 })
 
