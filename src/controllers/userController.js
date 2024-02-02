@@ -160,6 +160,40 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
 })
 
 
+const forgotPasswordRequest = asyncHandler(async (req, res) => {
+    const {email} = req.body
+
+    const user = await User.findOne(email);
+
+    if(!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const { hashedToken, unHashedToken, tokenExpiry } = await user.generateTemporaryToken()
+
+    user.passwordVerificationToken = hashedToken;
+    user.passwordVerificationExpiry = tokenExpiry;
+
+    await user.save({validateBeforeSave: false})
+
+    await sendEmail({
+        email: user?.email,
+        subject: "Password reset request",
+        mailgenContent: forgotPasswordMailgenContent(
+            user.username,
+            `${req.protocol}://${req.get(
+            "host"
+        )}/api/v1/users/reset-pasword/${unHashedToken}`
+        ),
+    });
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, {}, "Email sent to your mailbox for resetting your password")
+    )
+})
+
+
 const loginUser = asyncHandler(async (req, res) => {
 
     const {email, username, password} = req.body
@@ -375,6 +409,7 @@ const deleteUserAccount = asyncHandler(async(req, res) => {
 export { registerUser,
         verifyEmail,
         resendVerificationEmail,
+        forgotPasswordRequest,
         loginUser,
         logoutUser,
         refreshAccessToken,

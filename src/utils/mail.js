@@ -47,7 +47,6 @@ const sendEmail = async (options) => {
     }
 };
 
-
 // email verification mail design
 const emailVerificationMailgenContent = (username, verificationUrl) => {
     return {
@@ -66,6 +65,7 @@ const emailVerificationMailgenContent = (username, verificationUrl) => {
         },
     };
 };
+
 
 const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
     return {
