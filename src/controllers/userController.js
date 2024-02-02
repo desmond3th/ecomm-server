@@ -89,6 +89,41 @@ const registerUser = asyncHandler(async(req, res) => {
 })
 
 
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { verificationToken } = req.params;
+
+    if(!verificationToken) {
+        throw new ApiError(403, "Verification token is missing")
+    }
+
+    let hashedToken = crypto
+    .createHash("sha256")
+    .update(verificationToken)
+    .digest("hex");
+
+    const user = await User.findOne({
+        emailVerificationToken: hashedToken,
+        emailVerificationToken: {$gt : Date.now()}
+    })
+
+    if(!user) {
+        throw new ApiError(402, "User not found or token is invalid")
+    }
+
+    // user is verified so no point of storing the token and expiry date
+    isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpiry = undefined;
+
+    await user.save({validateBeforeSave: false})
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, {isEmailVerified:true} , "Email is verfied successfully")
+    )
+})
+
+
 const loginUser = asyncHandler(async (req, res) => {
 
     const {email, username, password} = req.body
@@ -302,6 +337,7 @@ const deleteUserAccount = asyncHandler(async(req, res) => {
 
 
 export { registerUser,
+        verifyEmail,
         loginUser,
         logoutUser,
         refreshAccessToken,
