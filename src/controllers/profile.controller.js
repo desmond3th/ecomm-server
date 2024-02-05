@@ -1,6 +1,6 @@
-import { Profile} from "../models/profileModel.js";
-import { User } from "../models/userModel.js";
-import { Order } from "../models/orderModel.js";
+import { Profile} from "../models/profile.model.js";
+import { User } from "../models/user.model.js";
+import { Order } from "../models/order.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
