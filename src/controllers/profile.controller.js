@@ -21,4 +21,23 @@ const getUserProfile = asyncHandler(async (req, res) => {
 })
 
 
-export { getUserProfile }
+const updateUserProfile = asyncHandler(async (req, res) => {
+
+    const {firstName, lastName, phoneNumber} = req.body;
+
+    const user = User.findByIdAndUpdate(req.user._id,
+        {
+            firstName,
+            lastName,
+            phoneNumber
+        },
+        {new: true}
+    );
+
+    return res.status(200)
+    .json(201, user, "User profile updated successfully")
+    
+})
+
+export { getUserProfile,
+        updateUserProfile }
