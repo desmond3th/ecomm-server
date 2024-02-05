@@ -71,5 +71,28 @@ const updateAddress = asyncHandler(async(req, res) => {
     )
 })
 
+
+const getAdressById = asyncHandler(async (req, res) => {
+
+    const addressId = req.params
+    const userId = req.user._id
+
+    const address = await Address.findOne({
+        _id: addressId,
+        owner: userId
+    })
+
+    if(!address) {
+        throw new ApiError(404, "address not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, address, "Address fetched succesfully")
+    )
+})
+
+
 export {addAddress,
-        updateAddress}
+        updateAddress,
+        getAdressById}
