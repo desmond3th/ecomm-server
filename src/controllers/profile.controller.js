@@ -8,7 +8,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const getUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
-    const user = User.findById(userId);
+    const user = Profile.findById(userId);
 
     if(!user) {
         throw new ApiError(400, "User profile not found")
@@ -25,7 +25,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     const {firstName, lastName, phoneNumber} = req.body;
 
-    const user = User.findByIdAndUpdate(req.user._id,
+    const userProfile = Profile.findByIdAndUpdate(req.user._id,
         {
             firstName,
             lastName,
@@ -35,7 +35,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     );
 
     return res.status(200)
-    .json(201, user, "User profile updated successfully")
+    .json(201, userProfile, "User profile updated successfully")
     
 })
 
