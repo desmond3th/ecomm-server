@@ -4,6 +4,7 @@ import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+
 const addAddress = asyncHandler(async (req, res) => {
     const {addressLine1, addressLine2, phoneNumber,
             alternatePhoneNumber, pinCode, city, state, country, landmark} = req.body;
@@ -30,4 +31,45 @@ const addAddress = asyncHandler(async (req, res) => {
 
 })
 
-export {addAddress}
+
+const updateAddress = asyncHandler(async(req, res) => {
+
+    const{addressId} = req.params;
+    const userId = req.user._id;
+
+    const {addressLine1, addressLine2, phoneNumber,
+            alternatePhoneNumber, pinCode, city, state, country, landmark} = req.body;
+    
+    const address = await Address.findByIdAndUpdate(
+        {
+            _id :addressId,
+            owner: userId, 
+        },
+        {
+            $set : {
+                owner,
+                addressLine1,
+                addressLine2 : addressLine2 || "", 
+                phoneNumber,
+                alternatePhoneNumber : alternatePhoneNumber || "",
+                pinCode, 
+                city, 
+                state, 
+                country, 
+                landmark : landmark || "",    
+            }     
+        }, {new: true}
+    )
+
+    if(!address) {
+        throw new ApiError(404, "address not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, address, "Address updated successfully")
+    )
+})
+
+export {addAddress,
+        updateAddress}
