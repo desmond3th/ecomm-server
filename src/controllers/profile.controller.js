@@ -7,9 +7,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 const getProfile = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
 
-    const user = await Profile.findById(userId);
+    const user = await Profile.findById(req.user._id);
 
     if(!user) {
         throw new ApiError(400, "User profile not found")
@@ -70,6 +69,7 @@ const getOrders = asyncHandler(async (req, res) => {
                 pipeline: [
                     {
                         $project : {
+                            _id : 1,
                             username: 1,
                             email : 1,
                         }
@@ -81,7 +81,7 @@ const getOrders = asyncHandler(async (req, res) => {
             $addFields : {
                 address : {$first : '$address'},
                 customer: {$first : '$customer'},
-                totalItem: {$size : '$items'}
+                totalItems: {$size : '$items'}
             }
         },
         {
@@ -98,6 +98,7 @@ const getOrders = asyncHandler(async (req, res) => {
                 currentPage: order.page,
                 totalPages: order.totalPages,
                 totalOrders: order.totalDocs,
+                hasNextPage: result.hasNextPage,
                 nextPage: result.hasNextPage ? result.nextPage : null,
                 orders: order.docs,
             },
