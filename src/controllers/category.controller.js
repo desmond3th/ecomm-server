@@ -65,6 +65,22 @@ const deleteCategory = asyncHandler(async(req,res) => {
 })
 
 
+const getCateoryById = asyncHandler(async (req, res) => {
+
+    const categoryId = req.params
+
+    const category = await Category.findById(categoryId)
+
+    if(!category) {
+        throw new ApiError(400, "Category not found")
+    }
+
+    return res.status(200)
+    .json(201, category, "Category fetched successfully")
+})
+
+
 export {createCategory,
         updateCategory,
-        deleteCategory}
+        deleteCategory,
+        getCateoryById}
