@@ -23,4 +23,30 @@ const createCategory = asyncHandler(async(req, res) => {
     )
 })
 
-export {createCategory,}
+
+const updateCategory = asyncHandler(async(req, res)  => {
+    const {name} = req.body;
+    const categoryId = req.params
+
+    const category = await Category.findByIdAndUpdate(
+        categoryId,
+        {
+            $set: {
+                name
+            }
+        }, {new:true}
+    )
+
+    if (!category) {
+        throw new ApiError(400, "Category not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, category,"Category updated successfully")
+    )
+})
+
+
+export {createCategory,
+        updateCategory,}
