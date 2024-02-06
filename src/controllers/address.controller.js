@@ -113,7 +113,43 @@ const deleteAddress = asyncHandler(async(req, res) => {
 })
 
 
+const getAllAddresses = asyncHandler(async(req, res) => {
+    
+    const {page = 1, limit = 10} = req.query
+
+    const options = {
+        page : parseInt(page),
+        limit : parseInt(limit)
+    }
+
+    const address = await Address.aggregatePaginate([
+        {
+            $match : { owner : req.user._id },
+        }
+    ], options)
+
+    if(!address) {
+        throw new ApiError(404, "Addresses not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse( 201, 
+            {
+                currentPage: address.page,
+                totalPages: address.totalPages,
+                totalAddress: address.totalDocs,
+                hasNextPage: result.hasNextPage,
+                nextPage: result.hasNextPage ? result.nextPage : null,
+                addresses: address.docs,
+            },
+            "All address feteched successfully")
+    )
+
+})
+
 export {addAddress,
         updateAddress,
         getAdressById,
-        deleteAddress}
+        deleteAddress,
+        getAllAddresses}
