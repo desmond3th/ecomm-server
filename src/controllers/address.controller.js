@@ -1,5 +1,4 @@
 import { Address } from "../models/address.model";
-import { User } from "../models/user.model,js";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -93,6 +92,28 @@ const getAdressById = asyncHandler(async (req, res) => {
 })
 
 
+const deleteAddress = asyncHandler(async(req, res) => {
+
+    const addressId = req.param;
+    const userId = req.user._id;
+
+    const address =  await Address.findByIdAndDelete({
+        owner: userId,
+        _id : addressId,
+    })
+
+    if(!address) {
+        throw new ApiError(404, "address not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, {deletedAdressInfo: address}, "Address deleted succesfully")
+    )
+})
+
+
 export {addAddress,
         updateAddress,
-        getAdressById}
+        getAdressById,
+        deleteAddress}
