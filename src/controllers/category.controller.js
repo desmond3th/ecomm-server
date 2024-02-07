@@ -80,7 +80,33 @@ const getCateoryById = asyncHandler(async (req, res) => {
 })
 
 
+const getAllCategories = asyncHandler(async (req, res) => {
+    const {page = 1, limit = 10} = req.query
+
+    const options = {
+        page : parseInt(page),
+        limit : parseInt(limit)
+    }
+
+    const category = await Category.aggregatePaginate([
+        {
+            $match : {}
+        }
+    ], options)
+
+    if(!category) {
+        throw new ApiError(404, "Failed to fetch the categories")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, category, "Categories fetched successfully")
+    )
+})
+
+
 export {createCategory,
         updateCategory,
         deleteCategory,
-        getCateoryById}
+        getCateoryById,
+        getAllCategories}
