@@ -37,5 +37,29 @@ const addProduct = asyncHandler(async(req, res) => {
     )
 })
 
+const updateProduct = asyncHandler( async (req, res) => {
+    const productId = req.params
+    const {name, description, price, stock} = req.body
 
-export {addProduct}
+    const product = await Product.findByIdAndUpdate({
+        productId,
+        $set :{
+            name,
+            description,
+            stock,
+            price
+        },
+    }, {new:true} )
+
+    if(!product) {
+        throw new ApiError(401, "Failed to update product details")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, product, "Product details updated successfully")
+    )
+})
+
+export {addProduct,
+        updateProduct,}
