@@ -80,6 +80,44 @@ const getProductById = asyncHandler( async (req, res) => {
 })
 
 
+const getProductByCategory = asyncHandler(async (req,res) => {
+    const {page = 1, limit = 10} = req.query
+    const categoryId = req.params
+
+    const category = await Category.findById(categoryId).select("name _id")
+
+    if(!category) {
+        throw new ApiError(401, "Failed to access the category")
+    }
+
+    const options  = {
+        page: parseInt(page),
+        limit: parseInt(limit)
+    }
+
+    const product = await Product.aggregatePaginate([
+        {
+            $match: {
+                category : new Mongoose.Types.ObjectId(category)
+            }
+        }
+    ], options)
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, {
+            currentPage: product.page,
+            totalPages: product.totalPages,
+            totalProduct: product.totalDocs,
+            hasNextPage: product.hasNextPage,
+            nextPage: product.hasNextPage ? result.nextPage : null,
+            products: product.docs,
+        }, "Products fetched by category")
+    )
+})
+
+
 export {addProduct,
         updateProduct,
-        getProductById}
+        getProductById,
+        getProductByCategory}
