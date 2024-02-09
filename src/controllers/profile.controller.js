@@ -98,8 +98,8 @@ const getOrders = asyncHandler(async (req, res) => {
                 currentPage: order.page,
                 totalPages: order.totalPages,
                 totalOrders: order.totalDocs,
-                hasNextPage: result.hasNextPage,
-                nextPage: result.hasNextPage ? result.nextPage : null,
+                hasNextPage: order.hasNextPage,
+                nextPage: order.hasNextPage ? result.nextPage : null,
                 orders: order.docs,
             },
             "Orders fetched successfully")

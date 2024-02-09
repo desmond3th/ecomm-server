@@ -139,8 +139,8 @@ const getAllAddresses = asyncHandler(async(req, res) => {
                 currentPage: address.page,
                 totalPages: address.totalPages,
                 totalAddress: address.totalDocs,
-                hasNextPage: result.hasNextPage,
-                nextPage: result.hasNextPage ? result.nextPage : null,
+                hasNextPage: address.hasNextPage,
+                nextPage: address.hasNextPage ? result.nextPage : null,
                 addresses: address.docs,
             },
             "All address feteched successfully")
