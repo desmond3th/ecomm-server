@@ -37,6 +37,7 @@ const addProduct = asyncHandler(async(req, res) => {
     )
 })
 
+
 const updateProduct = asyncHandler( async (req, res) => {
     const productId = req.params
     const {name, description, price, stock} = req.body
@@ -61,5 +62,24 @@ const updateProduct = asyncHandler( async (req, res) => {
     )
 })
 
+
+const getProductById = asyncHandler( async (req, res) => {
+
+    const productId = req.params;
+
+    const product = await Product.findById(productId);
+
+    if(!product) {
+        throw new ApiError(401, "Failed to access the product")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, product, "Product fetched successfully")
+    )    
+})
+
+
 export {addProduct,
-        updateProduct,}
+        updateProduct,
+        getProductById}
