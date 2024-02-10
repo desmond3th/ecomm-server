@@ -5,6 +5,7 @@ import {ApiResponse} from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { cloudinaryUpload, cloudinaryDelete } from "../utils/cloudinary.js";
 
+
 const addProduct = asyncHandler(async(req, res) => {
 
     const {name, description, price, category, stock} = req.body
@@ -117,7 +118,36 @@ const getProductByCategory = asyncHandler(async (req,res) => {
 })
 
 
+const getAllProducts = asyncHandler( async(req, res) => {
+    const {page = 1, limit = 10}  = req.query
+
+    const options = {
+        page: parseInt(page),
+        limit: parseInt(limit)
+    }
+
+    const products = await Product.aggregatePaginate([
+        {
+            $match : {}
+        }
+    ], options)
+
+    return res.status(200)
+    .json(
+        new ApiResponse(201, {
+            currentPage: products.page,
+            totalPages: products.totalPages,
+            totalProduct: products.totalDocs,
+            hasNextPage: products.hasNextPage,
+            nextPage: products.hasNextPage ? result.nextPage : null,
+            products: products.docs,
+        }, "Products fetched successfully")
+    )
+})
+
+
 export {addProduct,
         updateProduct,
         getProductById,
-        getProductByCategory}
+        getProductByCategory,
+        getAllProducts}
