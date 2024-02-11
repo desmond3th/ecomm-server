@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body } from "express-validator";
 
 const userRegisterValidator = () => {
     return [
@@ -23,4 +23,33 @@ const userRegisterValidator = () => {
     ];
 }
 
-export {userRegisterValidator}
+const userLoginValidator = () => {
+    return [
+        body("email").optional().isEmail().withMessage("Email is invalid"),
+        body("username").optional(),
+        body("password").notEmpty().withMessage("Password is required"),
+    ];
+};
+
+const ChangeCurrentPasswordValidator = () => {
+    return [
+        body("oldPassword").notEmpty().withMessage("Old password is required"),
+        body("newPassword").notEmpty().withMessage("New password is required"),
+    ];
+};
+
+const ForgotPasswordValidator = () => {
+    return [
+        body("email").notEmpty().withMessage("Email is required").isEmail().withMessage("Email is invalid"),
+    ];
+};  
+
+const ResetForgottenPasswordValidator = () => {
+    return [body("newPassword").notEmpty().withMessage("Password is required")];
+};
+
+export { userRegisterValidator,
+        userLoginValidator,
+        ChangeCurrentPasswordValidator,
+        ForgotPasswordValidator,
+        ResetForgottenPasswordValidator}
