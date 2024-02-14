@@ -12,19 +12,35 @@ import {
     changePassword,
     updateUserDetails,
     updateUserAvatar,
-    deleteUserAccount 
-} from '../controllers/user.controller';
+    deleteUserAccount } from '../controllers/user.controller';
 import {upload} from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { 
+    userRegisterValidator,
+    userLoginValidator,
+    ChangeCurrentPasswordValidator,
+    ForgotPasswordValidator,
+    ResetForgottenPasswordValidator } from '../../validators/user.validator.js';
+    import { validate } from '../../validators/validator.js';
 
+    
 const router = Router();
 
 
-router.route("/register").post(upload.single("avatar"),registerUser);
-router.route("/login").post(loginUser);
+// unsecured routes
+router.route("/register").post(userRegisterValidator(), validate, upload.single("avatar"), registerUser);
+router.route("/login").post(userLoginValidator(), validate, loginUser);
 router.route("/verify-email/:verificationToken").get(verifyEmail);
 router.route("/refresh-token").post(refreshAccessToken);
 
+router.route("/forgot-password").post(ForgotPasswordValidator(), validate, forgotPasswordRequest);
+router.route("/reset-forgot-password:resetToken").post(ResetForgottenPasswordValidator(), validate, resetForgottenPassword);
+
+// secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/resend-email-verification").post(verifyJWT, resendVerificationEmail);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
-router.route("/resend-email-verification").post(resendVerificationEmail);
+
+router.route("/change-password").post(verifyJWT, ChangeCurrentPasswordValidator(), validate, changePassword);
+
+router.route("/update-avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
