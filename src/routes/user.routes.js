@@ -44,3 +44,5 @@ router.route("/current-user").get(verifyJWT, getCurrentUser);
 router.route("/change-password").post(verifyJWT, ChangeCurrentPasswordValidator(), validate, changePassword);
 
 router.route("/update-avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
+router.route("/delete-account").delete(verifyJWT, deleteUserAccount);
+router.route("/update-account").patch(verifyJWT, updateUserDetails);
