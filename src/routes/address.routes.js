@@ -3,6 +3,7 @@ import {
     addAddress, updateAddress, getAllAddresses,deleteAddress,
     getAdressById } from "../controllers/address.controller";
 import { addAddressValidator, updateAddressValidator } from "../../validators/address.validator";
+import { mongoIdPathVariableValidator } from "../../validators/mongodb.validator.js";
 import { validate } from "../../validators/validator";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 

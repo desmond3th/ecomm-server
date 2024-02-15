@@ -2,6 +2,7 @@ import { Router } from "express";
 import { 
     createCategory, updateCategory, deleteCategory, getCateoryById, getAllCategories } from "../controllers/category.controller.js";
 import { categoryRequestBodyValidator } from "../../validators/category.validator.js";
+import { mongoIdPathVariableValidator } from "../../validators/mongodb.validator.js";
 import { validate } from "../../validators/validator";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
