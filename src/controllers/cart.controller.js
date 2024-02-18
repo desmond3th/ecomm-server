@@ -1,4 +1,5 @@
-import { Cart } from "../models/cart.model";
+import { Cart } from "../models/cart.model.js";
+import {Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -63,7 +64,50 @@ const getUserCart = asyncHandler(async(req, res ) => {
 });
 
 
+const addOrUpdateCartQuantity = asyncHandler(async(req, res) => {
+    const productId = req.params;
+    const {quantity = 1} = req.body;
+
+    const cart = await Cart.findOne({
+        owner : req.user._id,
+    })
+
+    const product = await Product.findById(productId);
+
+    if(!product) {
+        throw new ApiError(402, "Product doesn't exist")
+    }
+
+    if(quantity> product.stock) {
+        throw new ApiError(400, "Product is out of stock");
+    }
+
+    // check if product already exists in the cart
+    const addedProduct = cart.items?.find(
+    (item) => item.productId.toString() === productId)
+
+    if(addedProduct) {
+        addedProduct.quantity = quantity;
+
+        cart.items.push({
+            productId,
+            quantity
+        })
+    }
+
+    await cart.save({validatebeforesave : true});
+
+    const cartDetails = await getCart(req.user._id)
+
+    return res.status(200)
+    .json(
+        new ApiError(200, cartDetails, "cart details updated successfully")
+    )
+
+});
+
 
 export {
     getUserCart,
+    addOrUpdateCartQuantity
 }
