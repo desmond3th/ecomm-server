@@ -107,7 +107,33 @@ const addOrUpdateCartQuantity = asyncHandler(async(req, res) => {
 });
 
 
+const deleteCart = asyncHandler (async (req, res) => {
+    const {productId} = req.params
+
+    const cart = await Cart.findOneAndDelete(
+        {
+            owner : req.user._id,
+        },
+        {
+            $pull : {
+                items : {
+                    productId : productId
+                }   
+            }
+        }, {new : true});
+
+    const finalCart = await Cart.findById(req.user._id)
+    
+    return res.status(200)
+    .json(
+        new ApiResponse(200, finalCart, "cart deleted successfully")
+    )
+
+});
+
+
 export {
     getUserCart,
-    addOrUpdateCartQuantity
+    addOrUpdateCartQuantity,
+    deleteCart
 }
