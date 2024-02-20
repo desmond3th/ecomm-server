@@ -4,7 +4,9 @@ import {User} from "../models/user.model.js"
 import {cloudinaryUpload, cloudinaryDelete} from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
-import mongoose from "mongoose";
+import { sendEmail } from "../utils/mail.js";
+import { emailVerificationMailgenContent } from "../utils/mail.js";
+import { forgotPasswordMailgenContent } from "../utils/mail.js";
 
 
 const generateAccessAndRefreshTokens =  async (userId) => {

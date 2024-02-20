@@ -157,6 +157,7 @@ const clearCart = asyncHandler (async (req, res) => {
 
 
 export {
+    getCart,
     getUserCart,
     addOrUpdateCartQuantity,
     deleteCart,
