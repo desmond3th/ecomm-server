@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { 
     addAddress, updateAddress, getAllAddresses,deleteAddress,
-    getAdressById } from "../controllers/address.controller";
-import { addAddressValidator, updateAddressValidator } from "../../validators/address.validator";
-import { mongoIdPathVariableValidator } from "../../validators/mongodb.validator.js";
-import { validate } from "../../validators/validator";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+    getAdressById } from "../controllers/address.controller.js";
+import { addAddressValidator, updateAddressValidator } from "../validators/address.validator.js";
+import { mongoIdPathVariableValidator } from "../validators/mongodb.validator.js";
+import { validate } from "../validators/validator.js";
+import { verifyJWT } from "../middlewares/auth.js";
 
 const router = new Router();
 

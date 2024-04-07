@@ -12,16 +12,16 @@ import {
     changePassword,
     updateUserDetails,
     updateUserAvatar,
-    deleteUserAccount } from '../controllers/user.controller';
-import {upload} from "../middlewares/multer.middleware.js"
-import { verifyJWT } from "../middlewares/auth.middleware.js";
+    deleteUserAccount } from '../controllers/user.controller.js';
+import {upload} from "../middlewares/multer.js"
+import { verifyJWT } from "../middlewares/auth.js";
 import { 
     userRegisterValidator,
     userLoginValidator,
     ChangeCurrentPasswordValidator,
     ForgotPasswordValidator,
-    ResetForgottenPasswordValidator } from '../../validators/user.validator.js';
-    import { validate } from '../../validators/validator.js';
+    ResetForgottenPasswordValidator } from '../validators/user.validator.js';
+    import { validate } from '../validators/validator.js';
 
     
 const router = Router();

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { USER_TEMPORARY_TOKEN_EXPIRY } from "../constants.js";
+import { USER_TEMPORARY_TOKEN_EXPIRY } from "../constant.js";
 
 const userSchema = new mongoose.Schema(
     {

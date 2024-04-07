@@ -14,10 +14,10 @@ const cartItemSchema = new mongoose.Schema({
 });
 
 
-const cartSchema = new Schema(
+const cartSchema = new mongoose.Schema(
     {
         owner: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
         items: {

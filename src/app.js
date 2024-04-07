@@ -18,12 +18,12 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 
-import userRouter from "../routes/user.routes.js";
-import profileRouter from "../routes/profile.routes.js";
-import categoryRouter from "../routes/category.routes.js";
-import addressRouter from "../routes/address.routes.js";
-import productRouter from "../routes/product.routes.js";
-import cartRouter from "../routes/cart.routes.js";
+import userRouter from "./routes/user.routes.js";
+import profileRouter from "./routes/profile.routes.js";
+import categoryRouter from "./routes/category.routes.js";
+import addressRouter from "./routes/address.routes.js";
+import productRouter from "./routes/product.routes.js";
+import cartRouter from "./routes/cart.routes.js";
 
 
 app.use("/api/v1/users", userRouter);

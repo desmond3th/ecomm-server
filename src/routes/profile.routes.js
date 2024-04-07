@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getProfile, updateProfile, getOrders } from "../controllers/profile.controller";
-import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { updateProfileValidator } from '../../validators/profile.validator.js';
-import { validate } from '../../validators/validator.js';
+import { getProfile, updateProfile, getOrders } from "../controllers/profile.controller.js";
+import { verifyJWT } from "../middlewares/auth.js";
+import { updateProfileValidator } from '../validators/profile.validator.js';
+import { validate } from '../validators/validator.js';
 
 
 const router = Router();

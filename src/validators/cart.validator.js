@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const addItemOrUpdateQuantityValidator = async () => {
+const addItemOrUpdateQuantityValidator = () => {
     return [
         body("quantity")
         .optional()

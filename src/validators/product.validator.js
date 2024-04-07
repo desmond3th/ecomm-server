@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { mongoIdRequestBodyValidator } from "./mongodb.validator";
+import { mongoIdRequestBodyValidator } from "./mongodb.validator.js";
 
 const createProductValidator = () => {
     return [

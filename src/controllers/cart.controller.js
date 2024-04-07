@@ -65,7 +65,7 @@ const getUserCart = asyncHandler(async(req, res ) => {
 
 
 const addOrUpdateCartQuantity = asyncHandler(async(req, res) => {
-    const productId = req.params;
+    const {productId} = req.params;
     const {quantity = 1} = req.body;
 
     const cart = await Cart.findOne({
